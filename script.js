@@ -1,8 +1,13 @@
-const gameArea = document.getElementById('game-area')
+const gameArea = document.querySelector('.game-area')
 const scoreElem = document.getElementById('score')
 const livesElem = document.getElementById('lives')
 const timerElem = document.getElementById('timer')
 const gameContainer = document.querySelector('.game-container')
+
+// game elems
+
+let player
+
 
 // creating pause 
 const pauseMenu = document.createElement('div')
@@ -24,3 +29,14 @@ menuContent.appendChild(continueBtn)
 menuContent.appendChild(restartBtn)
 pauseMenu.appendChild(menuContent)
 gameContainer.appendChild(pauseMenu)
+
+// create player
+
+const createPlayer = () => {
+    player = document.createElement('div')
+    player.className = 'player'
+    gameArea.appendChild(player)
+
+}
+
+createPlayer()
