@@ -31,6 +31,31 @@ menuContent.appendChild(restartBtn)
 pauseMenu.appendChild(menuContent)
 gameContainer.appendChild(pauseMenu)
 
+// Toggle pause
+const togglePause = () => {
+    gamePaused = !gamePaused;
+    if (gamePaused) {
+        pauseMenu.style.display = 'flex';
+    } else {
+        pauseMenu.style.display = 'none';
+    }
+}
+
+// event listners
+
+const keys = {}
+
+window.addEventListener("keydown", (e) => {
+    keys[e.key] = true
+
+    // Pause game
+    if (e.key === "Escape" && gameRunning) {
+        togglePause()
+    }
+})
+
+
+
 // create player
 
 const createPlayer = () => {
@@ -39,10 +64,22 @@ const createPlayer = () => {
     gameArea.appendChild(player)
 }
 
+// move player 
+
+const movePlayer = () => {
+    if (keys.ArrowLeft && Number.parseInt(player.style.left) > 0) {
+        player.style.left = Number.parseInt(player.style.left) - 5
+    } else if (keys.ArrowRight && Number.parseInt(player.style.right) > 0) {
+        player.style.left = Number.parseInt(player.style.left) + 5
+    } else if (keys[' '] && shootCoolDown) {
+        shoot() // needs modifications
+    }
+}
+
 const createAlien = () => {
     aliens = []
-    for (let i = 0 ; i < 4 ; i++) {
-        for (let j = 0 ; j < 10 ; j++) {
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 10; j++) {
             const alien = document.createElement('div')
             alien.className = 'alien'
             gameArea.appendChild(alien)
