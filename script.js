@@ -41,21 +41,6 @@ const togglePause = () => {
     }
 }
 
-// event listners
-
-const keys = {}
-
-window.addEventListener("keydown", (e) => {
-    keys[e.key] = true
-
-    // Pause game
-    if (e.key === "Escape" && gameRunning) {
-        togglePause()
-    }
-})
-
-
-
 // create player
 
 const createPlayer = () => {
