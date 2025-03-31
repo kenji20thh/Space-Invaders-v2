@@ -7,6 +7,7 @@ const gameContainer = document.querySelector('.game-container')
 // game elems
 
 let player
+let aliens = []
 
 
 // creating pause 
@@ -36,7 +37,17 @@ const createPlayer = () => {
     player = document.createElement('div')
     player.className = 'player'
     gameArea.appendChild(player)
-
 }
 
+const createAlien = () => {
+    aliens = []
+    for (let i = 0 ; i < 4 ; i++) {
+        for (let j = 0 ; j < 10 ; j++) {
+            const alien = document.createElement('div')
+            alien.className = 'alien'
+            gameArea.appendChild(alien)
+            aliens.push(alien)
+        }
+    }
+}
 // createPlayer()
