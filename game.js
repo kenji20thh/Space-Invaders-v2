@@ -111,7 +111,7 @@ function gameLoop(timestamp) {
 
     // Update game state
     movePlayer()
-    moveAliens(deltaTime)
+    moveAliens()
     updateBullets()
     checkCollisions()
 
@@ -134,7 +134,7 @@ const movePlayer = () => {
     }
 }
 
-function moveAliens(deltaTime) {
+function moveAliens() {
     let moveDown = false
     let changeDirection = false
     for (let alien of aliens) {
