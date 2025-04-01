@@ -196,7 +196,7 @@ const updateBullets = () => {
     }
 }
 
-const shoot = () => {
+const  shoot = () => {
     const bullet = document.createElement('div')
     bullet.className = 'bullet'
     bullet.style.left = `${Number.parseInt(player.style.left) + 28}px` // Center the bullet on the player
@@ -241,13 +241,13 @@ function checkCollisions() {
                 gameArea.removeChild(alien)
                 aliens.splice(j, 1)
                 score += 10
-                updateUI()
+                updateStats()
 
                 // Check if all aliens are destroyed
                 if (aliens.length === 0) {
                     createAliens() // Create a new wave
                     score += 50 // Bonus for clearing a wave
-                    updateUI()
+                    updateStats()
                 }
 
                 break
@@ -277,7 +277,7 @@ function checkCollisions() {
 
 const loseLife = () => {
     lives--
-    updateUI()
+    updateStats()
     if (lives === 0) {
         gameOver()
     }
