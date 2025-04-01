@@ -280,7 +280,6 @@ const gameOver =() => {
 
 // events
 
-// Keyboard input handling
 const keys = {}
 window.addEventListener("keydown", (e) => {
     keys[e.key] = true
