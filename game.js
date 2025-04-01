@@ -1,4 +1,4 @@
-// Game state
+// Game stats
 let gameRunning = false
 let gamePaused = false
 let lastTime = 0
@@ -22,7 +22,7 @@ const scoreElem = document.getElementById("score")
 const livesElem = document.getElementById("lives")
 const timerElem = document.getElementById("timer")
 
-// pause menu creation
+// pause menu 
 const pauseMenu = document.createElement("div")
 pauseMenu.id = "pause-menu"
 pauseMenu.className = "hidden"
