@@ -83,4 +83,16 @@ const createAlien = () => {
         }
     }
 }
-// createPlayer()
+// alien shooting
+const alienShoot = () => {
+    if (aliens.length === 0) return
+    const randomAlien = aliens[Math.random() * aliens.length]
+    const bullet = createElement('div')
+    const alienLeft =  Number.parseInt(randomAlien.style.left)
+    const alienTop = Number.parseInt(randomAlien.style.top)
+    bullet.style.left = `${alienLeft + 18}px` 
+    bullet.style.top = `${alienTop + 30}px` 
+    gameArea.appendChild(bullet)
+    alienBullets.push(bullet)
+    alienShootCooldown = 1000 + Math.random() * 2000 
+}
