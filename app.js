@@ -8,6 +8,7 @@ const gameContainer = document.querySelector('.game-container')
 let score = 0
 let lives = 3
 let timeRemaining = 60
+let alienDirection = 1
 
 // game elems
 
@@ -94,6 +95,23 @@ const createAlien = () => {
         }
     }
 }
+
+// alien move
+const moveAlien = () => {
+    let moveDown = false
+    let changeDirection = false
+    for (let alien of aliens) {
+        if (alienDirection > 0 && Number.parseInt(alien.style.left) > 800 - 60) {
+            changeDirection = true
+            moveDown = true
+            break
+        } else if (alienDirection < 0 && Number.parseInt(alien.style.left) < 10) {
+            changeDirection = true
+            moveDown = true
+            break
+        }
+    }
+} 
 
 // update board
 const updateBoard = () => {
