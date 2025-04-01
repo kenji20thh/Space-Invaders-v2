@@ -8,7 +8,8 @@ const gameContainer = document.querySelector('.game-container')
 
 let player
 let aliens = []
-
+let bullets = []
+let alienBullets = []
 
 // creating pause 
 const pauseMenu = document.createElement('div')
@@ -46,6 +47,7 @@ const togglePause = () => {
 const createPlayer = () => {
     player = document.createElement('div')
     player.className = 'player'
+    player.style.left = `${800 / 2 - 30}px` //mid width - 30px
     gameArea.appendChild(player)
 }
 
@@ -56,9 +58,18 @@ const movePlayer = () => {
         player.style.left = Number.parseInt(player.style.left) - 5
     } else if (keys.ArrowRight && Number.parseInt(player.style.right) > 0) {
         player.style.left = Number.parseInt(player.style.left) + 5
-    } else if (keys[' '] && shootCoolDown) {
+    } else if (keys[' '] && shootCoolDown <= 0) {
         shoot() // needs modifications
     }
+}
+
+const shoot = () => {
+    const bullet = document.createElement('div')
+    bullet.className = 'bullet'
+    bullet.style.left = `${Number.parseInt(player.style.left) + 28}px`
+    bullet.style.top = `${560 - 40}px`//game height - 40
+    gameArea.appendChild(bullet)
+    bullet.push(bullet)
 }
 
 const createAlien = () => {
