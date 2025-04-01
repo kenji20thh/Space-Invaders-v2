@@ -4,7 +4,7 @@ let gamePaused = false
 let lastTime = 0
 let score = 0
 let lives = 3
-let timeRemaining = 60
+let timeRemaining = 120
 let alienDirection = 1 // 1 for right, -1 for left
 const alienMoveDown = false
 let shootCooldown = 0
@@ -49,7 +49,7 @@ const startGame = () => {
     createAliens()
     score = 0
     lives = 3
-    timeRemaining = 60
+    timeRemaining = 120
     updateStats()
     gameRunning = true
     requestAnimationFrame(gameLoop)
@@ -151,7 +151,7 @@ function moveAliens(deltaTime) {
     for (let alien of aliens) {
         if (moveDown) {
             alien.style.top = `${Number.parseInt(alien.style.top) + 20}px`
-            if (Number.parseInt(alien.style.top) > 560 - 50) {
+            if (Number.parseInt(alien.style.top) > 560 - 90) {
                 loseLife()
                 resetAliens()
                 break
@@ -242,14 +242,12 @@ function checkCollisions() {
                 aliens.splice(j, 1)
                 score += 10
                 updateStats()
-
                 // Check if all aliens are destroyed
                 if (aliens.length === 0) {
                     createAliens() // Create a new wave
                     score += 50 // Bonus for clearing a wave
                     updateStats()
                 }
-
                 break
             }
         }
