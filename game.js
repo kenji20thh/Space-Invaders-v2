@@ -5,7 +5,7 @@ let lastTime = 0
 let score = 0
 let lives = 3
 let timeRemaining = 120
-let alienDirection = 1 // 1 for right, -1 for left
+let alienDirection = 1 // 1 rigth -1left
 const alienMoveDown = false
 let shootCooldown = 0
 let alienShootCooldown = 0
@@ -219,54 +219,43 @@ const alienShoot = () => {
 }
 
 // Check for collisions
-function checkCollisions() {
+const checkCollisions = () => {
     // Check player bullets vs aliens
     for (let i = bullets.length - 1; i >= 0; i--) {
-        const bullet = bullets[i]
-        const bulletRect = bullet.getBoundingClientRect()
-
+        const bulletRect = bullets[i].getBoundingClientRect()
         for (let j = aliens.length - 1; j >= 0; j--) {
-            const alien = aliens[j]
-            const alienRect = alien.getBoundingClientRect()
-
+            const alienRect = aliens[j].getBoundingClientRect()
             if (
                 bulletRect.left < alienRect.right &&
                 bulletRect.right > alienRect.left &&
                 bulletRect.top < alienRect.bottom &&
                 bulletRect.bottom > alienRect.top
             ) {
-                // Collision detected
-                gameArea.removeChild(bullet)
+                gameArea.removeChild(bullets[i])
                 bullets.splice(i, 1)
-                gameArea.removeChild(alien)
+                gameArea.removeChild(aliens[j])
                 aliens.splice(j, 1)
                 score += 10
                 updateStats()
-                // Check if all aliens are destroyed
                 if (aliens.length === 0) {
-                    createAliens() // Create a new wave
-                    score += 50 // Bonus for clearing a wave
+                    createAliens() 
+                    score += 50 
                     updateStats()
                 }
                 break
             }
         }
     }
-
-    // Check alien bullets vs player
     const playerRect = player.getBoundingClientRect()
     for (let i = alienBullets.length - 1; i >= 0; i--) {
-        const bullet = alienBullets[i]
-        const bulletRect = bullet.getBoundingClientRect()
-
+        const bulletRect = alienBullets[i].getBoundingClientRect()
         if (
             bulletRect.left < playerRect.right &&
             bulletRect.right > playerRect.left &&
             bulletRect.top < playerRect.bottom &&
             bulletRect.bottom > playerRect.top
         ) {
-            // Collision detected
-            gameArea.removeChild(bullet)
+            gameArea.removeChild(alienBullets[i])
             alienBullets.splice(i, 1)
             loseLife()
         }
