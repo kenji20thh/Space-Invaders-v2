@@ -4,6 +4,11 @@ const livesElem = document.getElementById('lives')
 const timerElem = document.getElementById('timer')
 const gameContainer = document.querySelector('.game-container')
 
+// stats
+let score = 0
+let lives = 3
+let timeRemaining = 60
+
 // game elems
 
 let player
@@ -42,26 +47,7 @@ const togglePause = () => {
     }
 }
 
-// create player
-
-const createPlayer = () => {
-    player = document.createElement('div')
-    player.className = 'player'
-    player.style.left = `${800 / 2 - 30}px` //mid width - 30px
-    gameArea.appendChild(player)
-}
-
-// move player 
-
-const movePlayer = () => {
-    if (keys.ArrowLeft && Number.parseInt(player.style.left) > 0) {
-        player.style.left = Number.parseInt(player.style.left) - 5
-    } else if (keys.ArrowRight && Number.parseInt(player.style.right) > 0) {
-        player.style.right = Number.parseInt(player.style.right) + 5
-    } else if (keys[' '] && shootCoolDown <= 0) {
-        shoot() // needs modifications
-    }
-}
+//shppoting
 
 const shoot = () => {
     const bullet = document.createElement('div')
@@ -69,30 +55,49 @@ const shoot = () => {
     bullet.style.left = `${Number.parseInt(player.style.left) + 28}px`
     bullet.style.top = `${560 - 40}px`//game height - 40
     gameArea.appendChild(bullet)
-    bullets.push(bullet)
+    bullet.push(bullet)
 }
+
+// create player
+
+const createPlayer = () => {
+    player = document.createElement('div')
+    player.className = 'player'
+    player.style.left = `${800 / 2 - 30}px` //mid game width - 30px
+    gameArea.appendChild(player)
+}
+
+const movePlayer = () => {
+    if (keys.ArrowLeft && Number.parseInt(player.style.left) > 0) {
+        player.style.left = Number.parseInt(player.style.left) - 5
+    } else if (keys.ArrowRight && Number.parseInt(player.style.right) < 800 - 60) { // game width - 60
+        player.style.left = Number.parseInt(player.style.left) + 5 // 5 = player speed
+    } else if (keys[' ']) {
+        shoot() // needs modifications
+    }
+}
+
+// creat aliens 
 
 const createAlien = () => {
     aliens = []
+    const startX = (800 - 10 * (40 + 10)) / 2 //(gamewidth - columns * (alienWidth + alien paddin)) / 2
+    const startY = 50
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 10; j++) {
             const alien = document.createElement('div')
             alien.className = 'alien'
+            alien.style.left = `${startX + i * (40 + 10)}px` // startX + row * (alienWidth + padding)
+            alien.style.top = `${startY + j * (30 + 10)}px` // startY + row * (alienHeight + padding)
             gameArea.appendChild(alien)
             aliens.push(alien)
         }
     }
 }
-// alien shooting
-const alienShoot = () => {
-    if (aliens.length === 0) return
-    const randomAlien = aliens[Math.random() * aliens.length]
-    const bullet = createElement('div')
-    const alienLeft =  Number.parseInt(randomAlien.style.left)
-    const alienTop = Number.parseInt(randomAlien.style.top)
-    bullet.style.left = `${alienLeft + 18}px` 
-    bullet.style.top = `${alienTop + 30}px` 
-    gameArea.appendChild(bullet)
-    alienBullets.push(bullet)
-    alienShootCooldown = 1000 + Math.random() * 2000 
+
+// update board
+const updateBoard = () => {
+    scoreElem.textContent = score
+    livesElem.textContent = lives
+    timerElem.textContent = timeRemaining
 }
