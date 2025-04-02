@@ -197,11 +197,11 @@ const updateBullets = () => {
     }
 }
 
-const  shoot = () => {
+const shoot = () => {
     const bullet = document.createElement('div')
     bullet.className = 'bullet'
     bullet.style.left = `${Number.parseInt(player.style.left) + 28}px` // Center the bullet on the player
-    bullet.style.top = `${560 - 40}px` 
+    bullet.style.top = `${560 - 40}px`
     gameArea.appendChild(bullet)
     bullets.push(bullet)
     shootCooldown = 1000
@@ -212,11 +212,11 @@ const alienShoot = () => {
     const randomAlien = aliens[Math.floor(Math.random() * aliens.length)]
     const bullet = document.createElement('div')
     bullet.className = 'alien-bullet'
-    bullet.style.left = `${Number.parseInt(randomAlien.style.left) + 18}px` 
-    bullet.style.top = `${Number.parseInt(randomAlien.style.top) + 30}px` 
+    bullet.style.left = `${Number.parseInt(randomAlien.style.left) + 18}px`
+    bullet.style.top = `${Number.parseInt(randomAlien.style.top) + 30}px`
     gameArea.appendChild(bullet)
     alienBullets.push(bullet)
-    alienShootCooldown = 1000 + Math.random() * 2000 
+    alienShootCooldown = 1000 + Math.random() * 2000
 }
 
 // Check for collisions
@@ -239,8 +239,8 @@ const checkCollisions = () => {
                 score += 10
                 updateStats()
                 if (aliens.length === 0) {
-                    createAliens() 
-                    score += 50 
+                    createAliens()
+                    score += 50
                     updateStats()
                 }
                 break
@@ -274,10 +274,10 @@ const loseLife = () => {
 const resetPauseMenu = () => {
     pauseMenu.classList.add('hidden')
     menuTitle.textContent = 'PAUSED'
-    continueBtn.style.display = 'block' 
+    continueBtn.style.display = 'block'
 }
 
-const gameOver =() => {
+const gameOver = () => {
     gameRunning = false
     pauseMenu.style.display = 'flex'
     pauseMenu.classList.remove('hidden')
@@ -298,7 +298,7 @@ window.addEventListener("keyup", (e) => {
     keys[e.key] = false
 })
 continueBtn.addEventListener("click", () => {
-    togglePause() 
+    togglePause()
 })
 restartBtn.addEventListener("click", () => {
     pauseMenu.style.display = 'none'
@@ -315,9 +315,17 @@ const togglePause = () => {
     }
 }
 
+let gameLoopId = null; // Store the animation frame ID
+let timerInterval = null; // Store the timer interval ID
+
+
 const resetGame = () => {
     pauseMenu.style.display = 'none'
-    gamePaused = false;
+    gamePaused = false
+
+    if (gameLoopId) cancelAnimationFrame(gameLoopId); // Stop the old game loop
+    if (timerInterval) clearInterval(timerInterval); // Stop the old timer
+
     while (gameArea.firstChild) {
         gameArea.removeChild(gameArea.firstChild)
     }
@@ -325,6 +333,6 @@ const resetGame = () => {
     alienBullets = []
     aliens = []
     startGame()
-}   
+}
 window.addEventListener('load', startGame)
 
