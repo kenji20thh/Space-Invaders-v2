@@ -44,6 +44,7 @@ document.querySelector(".game-container").appendChild(pauseMenu)
 
 const startGame = () => {
     pauseMenu.style.display = 'none'
+    resetPauseMenu()
     gamePaused = false
     createPlayer()
     createAliens()
@@ -268,6 +269,12 @@ const loseLife = () => {
     if (lives === 0) {
         gameOver()
     }
+}
+
+const resetPauseMenu = () => {
+    pauseMenu.classList.add('hidden')
+    menuTitle.textContent = 'PAUSED'
+    continueBtn.style.display = 'block' 
 }
 
 const gameOver =() => {
