@@ -203,7 +203,7 @@ const  shoot = () => {
     bullet.style.top = `${560 - 40}px` 
     gameArea.appendChild(bullet)
     bullets.push(bullet)
-    shootCooldown = 300 
+    shootCooldown = 1000
 }
 
 const alienShoot = () => {
@@ -275,7 +275,7 @@ const gameOver =() => {
     pauseMenu.style.display = 'flex'
     pauseMenu.classList.remove('hidden')
     document.getElementById('continue-btn').style.display = 'none'
-    document.querySelector('.menu-content h2').textContent = 'GAME OVER'
+    document.querySelector('.menu-content h2').textContent = `GAME OVER  Your Score: ${score}`
 }
 
 // events
