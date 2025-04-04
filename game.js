@@ -135,7 +135,7 @@ const movePlayer = () => {
     }
 }
 
-function moveAliens() {
+const moveAliens = () => {
     let moveDown = false
     let changeDirection = false
     for (let alien of aliens) {
