@@ -204,7 +204,7 @@ const shoot = () => {
     bullet.style.top = `${560 - 40}px`
     gameArea.appendChild(bullet)
     bullets.push(bullet)
-    shootCooldown = 1000
+    shootCooldown = 400
 }
 
 const alienShoot = () => {
