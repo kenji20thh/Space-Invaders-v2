@@ -71,7 +71,7 @@ const createAliens = () => {
     for (let i = 0; i < 5; i++) {
         for (let j = 0; j < 10; j++) {
             const alien = document.createElement("div")
-            alien.className = "alien"
+            alien.className = "alien" + (i+1) 
             alien.style.left = `${startX + j * (40 + 10)}px` // 10 = padding
             alien.style.top = `${startY + i * (30 + 10)}px`
             gameArea.appendChild(alien)

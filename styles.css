@@ -56,15 +56,54 @@ body {
     transform: translateX(-50%);
 }
 
-.alien {
+.alien1 {
     position: absolute;
-    width: 40px;
-    height: 30px;
-    background-image: url('classic-space-invader-alien-i34l.png'); 
+    width: 32px;
+    height: 24px;
+    background-image: url('alien1.png'); 
     background-size: cover; 
     background-repeat: no-repeat;
     background-position: center;
+}
 
+.alien2 {
+    position: absolute;
+    width: 40px;
+    height: 30px;
+    background-image: url('alien2.png'); 
+    background-size: cover; 
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.alien3 {
+    position: absolute;
+    width: 40px;
+    height: 30px;
+    background-image: url('alien3.png'); 
+    background-size: cover; 
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.alien4 {
+    position: absolute;
+    width: 40px;
+    height: 30px;
+    background-image: url('alien4.png'); 
+    background-size: cover; 
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.alien5 {
+    position: absolute;
+    width: 40px;
+    height: 30px;
+    background-image: url('alien5.png'); 
+    background-size: cover; 
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .bullet {
