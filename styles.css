@@ -111,7 +111,14 @@ body {
     width: 4px;
     height: 15px;
     transform: translateX(-30px);
-    background-color: #ffffff;
+    background-color: #51de22;
+    
+    box-shadow: 0 0 6px #51de22,
+                0 0 12px #51de22,
+                0 0 18px #51de22,
+                0 0 24px #51de22;
+                
+    border-radius: 2px;
 }
 
 .alien-bullet {
