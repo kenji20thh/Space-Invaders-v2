@@ -100,7 +100,7 @@ const startTime = () => {
         clearInterval(timerInterval)
         timerInterval = null
     }
-    const timerInterval = setInterval(() => {
+    timerInterval = setInterval(() => {
         if (!gamePaused && gameRunning) {
             timeRemaining -= 0.1
             updateStats()
