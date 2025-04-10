@@ -9,6 +9,7 @@ let alienDirection = 1 // 1 rigth -1left
 const alienMoveDown = false
 let shootCooldown = 0
 let alienShootCooldown = 0
+let gameLoopId = null
 
 // Game elements
 let player
@@ -43,6 +44,10 @@ pauseMenu.appendChild(menuContent)
 document.querySelector(".game-container").appendChild(pauseMenu)
 
 const startGame = () => {
+    if (gameLoopId) {
+        cancelAnimationFrame(gameLoopId);
+        gameLoopId = null;
+    }
     pauseMenu.style.display = 'none'
     resetPauseMenu()
     gamePaused = false
@@ -52,6 +57,7 @@ const startGame = () => {
     lives = 3
     timeRemaining = 120
     updateStats()
+    lastTime = performance.now()
     gameRunning = true
     requestAnimationFrame(gameLoop)
     startTime()
@@ -71,7 +77,7 @@ const createAliens = () => {
     for (let i = 0; i < 5; i++) {
         for (let j = 0; j < 10; j++) {
             const alien = document.createElement("div")
-            alien.className = "alien" + (i+1) 
+            alien.className = "alien" + (i + 1)
             alien.style.left = `${startX + j * (40 + 10)}px` // 10 = padding
             alien.style.top = `${startY + i * (30 + 10)}px`
             gameArea.appendChild(alien)
@@ -88,6 +94,7 @@ const updateStats = () => {
 }
 
 const startTime = () => {
+    if (timerInterval) clearInterval(timerInterval)
     const timerInterval = setInterval(() => {
         if (!gamePaused && gameRunning) {
             timeRemaining -= 0.1
@@ -103,7 +110,7 @@ const startTime = () => {
 function gameLoop(timestamp) {
     if (!gameRunning) return
     if (gamePaused) {
-        requestAnimationFrame(gameLoop)
+        gameLoopId = requestAnimationFrame(gameLoop)
         return
     }
 
@@ -122,7 +129,7 @@ function gameLoop(timestamp) {
     else alienShoot()
 
     // Continue the loop
-    requestAnimationFrame(gameLoop)
+    gameLoopId = requestAnimationFrame(gameLoop)
 }
 
 const movePlayer = () => {
@@ -315,7 +322,6 @@ const togglePause = () => {
     }
 }
 
-let gameLoopId = null; // Store the animation frame ID
 let timerInterval = null; // Store the timer interval ID
 
 
@@ -323,8 +329,15 @@ const resetGame = () => {
     pauseMenu.style.display = 'none'
     gamePaused = false
 
-    if (gameLoopId) cancelAnimationFrame(gameLoopId); // Stop the old game loop
-    if (timerInterval) clearInterval(timerInterval); // Stop the old timer
+    if (gameLoopId) {
+        cancelAnimationFrame(gameLoopId)
+        gameLoopId = null
+    }
+    // Stop the old game loop
+    if (timerInterval) {
+        clearInterval(timerInterval)
+        timerInterval = null
+    }
 
     while (gameArea.firstChild) {
         gameArea.removeChild(gameArea.firstChild)
