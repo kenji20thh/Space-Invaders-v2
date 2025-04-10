@@ -10,6 +10,8 @@ const alienMoveDown = false
 let shootCooldown = 0
 let alienShootCooldown = 0
 let gameLoopId = null
+let timerInterval = null; // Store the timer interval ID
+
 
 // Game elements
 let player
@@ -94,13 +96,17 @@ const updateStats = () => {
 }
 
 const startTime = () => {
-    if (timerInterval) clearInterval(timerInterval)
+    if (timerInterval) {
+        clearInterval(timerInterval)
+        timerInterval = null
+    }
     const timerInterval = setInterval(() => {
         if (!gamePaused && gameRunning) {
             timeRemaining -= 0.1
             updateStats()
             if (timeRemaining <= 0) {
                 clearInterval(timerInterval)
+                timerInterval = null
                 gameOver()
             }
         }
@@ -322,7 +328,6 @@ const togglePause = () => {
     }
 }
 
-let timerInterval = null; // Store the timer interval ID
 
 
 const resetGame = () => {
