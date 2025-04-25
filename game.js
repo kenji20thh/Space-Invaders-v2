@@ -139,10 +139,14 @@ function gameLoop(timestamp) {
 }
 
 const movePlayer = () => {
-    if (keys.ArrowLeft && Number.parseInt(player.style.left) > 0) {
+    if (keys.ArrowLeft && Number.parseInt(player.style.left) > 30) {
         player.style.left = `${Number.parseInt(player.style.left) - 5}px`
-    } else if (keys.ArrowRight && Number.parseInt(player.style.left) + 60 < 800) { // game width - 60
+        if (keys[' ']&& shootCooldown <= 0) shoot() 
+
+    } else if (keys.ArrowRight && Number.parseInt(player.style.left) + 40 < 800) { // game width - 60
         player.style.left = `${Number.parseInt(player.style.left) + 5}px` // 5 = player speed
+        if (keys[' ']&& shootCooldown <= 0) shoot()
+
     } else if (keys[' '] && shootCooldown <= 0) {
         shoot() // needs modifications
     }
@@ -165,7 +169,7 @@ const moveAliens = () => {
     for (let alien of aliens) {
         if (moveDown) {
             alien.style.top = `${Number.parseInt(alien.style.top) + 20}px`
-            if (Number.parseInt(alien.style.top) > 560 - 90) {
+            if (Number.parseInt(alien.style.top) > 450) {
                 loseLife()
                 resetAliens()
                 break
@@ -214,7 +218,7 @@ const shoot = () => {
     const bullet = document.createElement('div')
     bullet.className = 'bullet'
     bullet.style.left = `${Number.parseInt(player.style.left) + 28}px` // Center the bullet on the player
-    bullet.style.top = `${560 - 40}px`
+    bullet.style.top = `${560 - 60}px`
     gameArea.appendChild(bullet)
     bullets.push(bullet)
     shootCooldown = 400
@@ -252,6 +256,7 @@ const checkCollisions = () => {
                 score += 10
                 updateStats()
                 if (aliens.length === 0) {
+                    timeRemaining += 20 
                     createAliens()
                     score += 50
                     updateStats()

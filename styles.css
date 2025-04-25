@@ -109,7 +109,7 @@ body {
 .bullet {
     position: absolute;
     width: 4px;
-    height: 15px;
+    height: 10px;
     transform: translateX(-30px);
     background-color: #51de22;
     
@@ -124,7 +124,7 @@ body {
 .alien-bullet {
     position: absolute;
     width: 4px;
-    height: 15px;
+    height: 10px;
     background-color: #ff3333;
 }
 
