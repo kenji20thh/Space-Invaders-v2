@@ -25,6 +25,15 @@ const scoreElem = document.getElementById("score")
 const livesElem = document.getElementById("lives")
 const timerElem = document.getElementById("timer")
 
+function getbounds() {
+    return {
+        width : gameArea.clientWidth,
+        height : gameArea.clientHeight
+    }
+    
+}
+const {width, height} = getbounds()
+
 // pause menu 
 const pauseMenu = document.createElement("div")
 pauseMenu.id = "pause-menu"
@@ -68,13 +77,13 @@ const startGame = () => {
 const createPlayer = () => {
     player = document.createElement("div")
     player.className = "player"
-    player.style.left = `${800 / 2 - 30}px` // mid game widtih - 30
+    player.style.left = `${ width / 2 - 30}px` // mid game widtih - 30
     gameArea.appendChild(player)
 }
 
 const createAliens = () => {
     aliens = []
-    const startX = (800 - 10 * (40 + 10)) / 2 //(gamewidth - columns * (alienWidth + alien paddin)) / 2
+    const startX = (width - 10 * (40 + 10)) / 2 //(gamewidth - columns * (alienWidth + alien paddin)) / 2
     const startY = 50
     for (let i = 0; i < 5; i++) {
         for (let j = 0; j < 10; j++) {
@@ -143,7 +152,7 @@ const movePlayer = () => {
         player.style.left = `${Number.parseInt(player.style.left) - 5}px`
         if (keys[' ']&& shootCooldown <= 0) shoot() 
 
-    } else if (keys.ArrowRight && Number.parseInt(player.style.left) + 40 < 800) { // game width - 60
+    } else if (keys.ArrowRight && Number.parseInt(player.style.left) + 40 < width) { // game width - 60
         player.style.left = `${Number.parseInt(player.style.left) + 5}px` // 5 = player speed
         if (keys[' ']&& shootCooldown <= 0) shoot()
 
@@ -156,7 +165,7 @@ const moveAliens = () => {
     let moveDown = false
     let changeDirection = false
     for (let alien of aliens) {
-        if (alienDirection > 0 && Number.parseInt(alien.style.left) > 800 - 60) {
+        if (alienDirection > 0 && Number.parseInt(alien.style.left) > width - 60) {
             changeDirection = true
             moveDown = true
             break
@@ -169,7 +178,7 @@ const moveAliens = () => {
     for (let alien of aliens) {
         if (moveDown) {
             alien.style.top = `${Number.parseInt(alien.style.top) + 20}px`
-            if (Number.parseInt(alien.style.top) > 450) {
+            if (Number.parseInt(alien.style.top) > height) {
                 loseLife()
                 resetAliens()
                 break
@@ -186,7 +195,7 @@ const resetAliens = () => {
     const startY = 50
     let row = 0
     let col = 0
-    const startX = (800 - 10 * (40 + 10)) / 2 // width - cols * (width + padding) / 2
+    const startX = (width - 10 * (40 + 10)) / 2 // width - cols * (width + padding) / 2
     for (let i = 0; i < aliens.length; i++) {
         row = Math.floor(i / 10)
         col = i % 10
@@ -218,7 +227,7 @@ const shoot = () => {
     const bullet = document.createElement('div')
     bullet.className = 'bullet'
     bullet.style.left = `${Number.parseInt(player.style.left) + 28}px` // Center the bullet on the player
-    bullet.style.top = `${560 - 60}px`
+    bullet.style.top = `${height-50}px`
     gameArea.appendChild(bullet)
     bullets.push(bullet)
     shootCooldown = 400
@@ -333,8 +342,6 @@ const togglePause = () => {
     }
 }
 
-
-
 const resetGame = () => {
     pauseMenu.style.display = 'none'
     gamePaused = false
@@ -357,5 +364,6 @@ const resetGame = () => {
     aliens = []
     startGame()
 }
+
 window.addEventListener('load', startGame)
 
