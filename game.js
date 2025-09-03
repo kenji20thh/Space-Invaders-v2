@@ -5,36 +5,47 @@ let lastTime = 0
 let score = 0
 let lives = 3
 let timeRemaining = 120
-let alienDirection = 1 // 1 rigth -1left
-const alienMoveDown = false
+let alienDirection = 1 // 1 right -1 left
 let shootCooldown = 0
 let alienShootCooldown = 0
 let gameLoopId = null
-let timerInterval = null; // Store the timer interval ID
+let timerInterval = null
 
-
-// Game elements
-let player
+// Game elements with position tracking
+let player = { element: null, x: 0, y: 0 }
 let aliens = []
 let bullets = []
 let alienBullets = []
 
-// DOM elemts
+// DOM elements
 const gameArea = document.getElementById("game-area")
 const scoreElem = document.getElementById("score")
 const livesElem = document.getElementById("lives")
 const timerElem = document.getElementById("timer")
 
-function getbounds() {
+function getBounds() {
     return {
-        width : gameArea.clientWidth,
-        height : gameArea.clientHeight
+        width: gameArea.clientWidth,
+        height: gameArea.clientHeight
     }
-    
 }
-const {width, height} = getbounds()
 
-// pause menu 
+// Helper function to update element position using transform
+function updateElementPosition(element, x, y) {
+    element.style.transform = `translate(${x}px, ${y}px)`
+}
+
+// Helper function to get element bounds with transform
+function getTransformBounds(element, x, y, width, height) {
+    return {
+        left: x,
+        right: x + width,
+        top: y,
+        bottom: y + height
+    }
+}
+
+// Pause menu setup
 const pauseMenu = document.createElement("div")
 pauseMenu.id = "pause-menu"
 pauseMenu.className = "hidden"
@@ -56,8 +67,8 @@ document.querySelector(".game-container").appendChild(pauseMenu)
 
 const startGame = () => {
     if (gameLoopId) {
-        cancelAnimationFrame(gameLoopId);
-        gameLoopId = null;
+        cancelAnimationFrame(gameLoopId)
+        gameLoopId = null
     }
     pauseMenu.style.display = 'none'
     resetPauseMenu()
@@ -71,31 +82,40 @@ const startGame = () => {
     lastTime = performance.now()
     gameRunning = true
     requestAnimationFrame(gameLoop)
-    startTime()
+    startTimer()
 }
 
 const createPlayer = () => {
-    player = document.createElement("div")
-    player.className = "player"
-    player.style.left = `${ width / 2 - 30}px` // mid game widtih - 30
-    gameArea.appendChild(player)
+    const { width, height } = getBounds()
+    player.element = document.createElement("div")
+    player.element.className = "player"
+    player.x = width / 2 - 30
+    player.y = height - 75
+    updateElementPosition(player.element, player.x, player.y)
+    gameArea.appendChild(player.element)
 }
 
 const createAliens = () => {
     aliens = []
-    const startX = (width - 10 * (40 + 10)) / 2 //(gamewidth - columns * (alienWidth + alien paddin)) / 2
+    const { width } = getBounds()
+    const startX = (width - 10 * (40 + 10)) / 2
     const startY = 50
+    
     for (let i = 0; i < 5; i++) {
         for (let j = 0; j < 10; j++) {
-            const alien = document.createElement("div")
-            alien.className = "alien" + (i + 1)
-            alien.style.left = `${startX + j * (40 + 10)}px` // 10 = padding
-            alien.style.top = `${startY + i * (30 + 10)}px`
-            gameArea.appendChild(alien)
+            const alien = {
+                element: document.createElement("div"),
+                x: startX + j * (40 + 10),
+                y: startY + i * (30 + 10),
+                width: 40,
+                height: 30
+            }
+            alien.element.className = "alien" + (i + 1)
+            updateElementPosition(alien.element, alien.x, alien.y)
+            gameArea.appendChild(alien.element)
             aliens.push(alien)
         }
     }
-
 }
 
 const updateStats = () => {
@@ -104,7 +124,7 @@ const updateStats = () => {
     timerElem.textContent = Math.ceil(timeRemaining)
 }
 
-const startTime = () => {
+const startTimer = () => {
     if (timerInterval) {
         clearInterval(timerInterval)
         timerInterval = null
@@ -121,7 +141,8 @@ const startTime = () => {
         }
     }, 100)
 }
-// game loop
+
+// Game loop
 function gameLoop(timestamp) {
     if (!gameRunning) return
     if (gamePaused) {
@@ -148,87 +169,111 @@ function gameLoop(timestamp) {
 }
 
 const movePlayer = () => {
-    if (keys.ArrowLeft && Number.parseInt(player.style.left) > 30) {
-        player.style.left = `${Number.parseInt(player.style.left) - 5}px`
-        if (keys[' ']&& shootCooldown <= 0) shoot() 
-
-    } else if (keys.ArrowRight && Number.parseInt(player.style.left) + 40 < width) { // game width - 60
-        player.style.left = `${Number.parseInt(player.style.left) + 5}px` // 5 = player speed
-        if (keys[' ']&& shootCooldown <= 0) shoot()
-
+    const { width } = getBounds()
+    
+    if (keys.ArrowLeft && player.x > 30) {
+        player.x -= 5
+        updateElementPosition(player.element, player.x, player.y)
+        if (keys[' '] && shootCooldown <= 0) shoot()
+    } else if (keys.ArrowRight && player.x + 60 < width) {
+        player.x += 5
+        updateElementPosition(player.element, player.x, player.y)
+        if (keys[' '] && shootCooldown <= 0) shoot()
     } else if (keys[' '] && shootCooldown <= 0) {
-        shoot() // needs modifications
+        shoot()
     }
 }
 
 const moveAliens = () => {
+    const { width, height } = getBounds()
     let moveDown = false
     let changeDirection = false
+    
+    // Check if any alien hits the boundary
     for (let alien of aliens) {
-        if (alienDirection > 0 && Number.parseInt(alien.style.left) > width - 60) {
+        if (alienDirection > 0 && alien.x > width - 60) {
             changeDirection = true
             moveDown = true
             break
-        } else if (alienDirection < 0 && Number.parseInt(alien.style.left) < 10) {
+        } else if (alienDirection < 0 && alien.x < 10) {
             changeDirection = true
             moveDown = true
             break
         }
     }
+    
+    // Move aliens
     for (let alien of aliens) {
         if (moveDown) {
-            alien.style.top = `${Number.parseInt(alien.style.top) + 20}px`
-            if (Number.parseInt(alien.style.top) > height) {
+            alien.y += 20
+            if (alien.y > height) {
                 loseLife()
                 resetAliens()
                 break
             }
         }
-        alien.style.left = `${Number.parseInt(alien.style.left) + 1 * alienDirection}px` // 1 = alien speed
+        alien.x += 1 * alienDirection
+        updateElementPosition(alien.element, alien.x, alien.y)
     }
+    
     if (changeDirection) {
         alienDirection *= -1
     }
 }
 
 const resetAliens = () => {
+    const { width } = getBounds()
     const startY = 50
-    let row = 0
-    let col = 0
-    const startX = (width - 10 * (40 + 10)) / 2 // width - cols * (width + padding) / 2
+    const startX = (width - 10 * (40 + 10)) / 2
+    
     for (let i = 0; i < aliens.length; i++) {
-        row = Math.floor(i / 10)
-        col = i % 10
-        aliens[i].style.left = `${startX + col * (40 + 10)}px` // width + padding
-        aliens[i].style.top = `${startY + row * (30 + 10)}px` // height + padding
+        const row = Math.floor(i / 10)
+        const col = i % 10
+        aliens[i].x = startX + col * (40 + 10)
+        aliens[i].y = startY + row * (30 + 10)
+        updateElementPosition(aliens[i].element, aliens[i].x, aliens[i].y)
     }
 }
 
 const updateBullets = () => {
+    const { height } = getBounds()
+    
+    // Update player bullets
     for (let i = bullets.length - 1; i >= 0; i--) {
         const bullet = bullets[i]
-        bullet.style.top = `${Number.parseInt(bullet.style.top) - 7}px` // 7 = bullet speed
-        if (Number.parseInt(bullet.style.top) < 0) { // off scrreen remove
-            gameArea.removeChild(bullet)
+        bullet.y -= 7
+        updateElementPosition(bullet.element, bullet.x, bullet.y)
+        
+        if (bullet.y < 0) {
+            gameArea.removeChild(bullet.element)
             bullets.splice(i, 1)
         }
     }
+    
+    // Update alien bullets
     for (let i = alienBullets.length - 1; i >= 0; i--) {
         const bullet = alienBullets[i]
-        bullet.style.top = `${Number.parseInt(bullet.style.top) + 5}px` // alien bullet speed = 5
-        if (Number.parseInt(bullet.style.top) > 560) {
-            gameArea.removeChild(bullet)
+        bullet.y += 5
+        updateElementPosition(bullet.element, bullet.x, bullet.y)
+        
+        if (bullet.y > height) {
+            gameArea.removeChild(bullet.element)
             alienBullets.splice(i, 1)
         }
     }
 }
 
 const shoot = () => {
-    const bullet = document.createElement('div')
-    bullet.className = 'bullet'
-    bullet.style.left = `${Number.parseInt(player.style.left) + 28}px` // Center the bullet on the player
-    bullet.style.top = `${height-50}px`
-    gameArea.appendChild(bullet)
+    const bullet = {
+        element: document.createElement('div'),
+        x: player.x + 28,
+        y: player.y,
+        width: 4,
+        height: 10
+    }
+    bullet.element.className = 'bullet'
+    updateElementPosition(bullet.element, bullet.x, bullet.y)
+    gameArea.appendChild(bullet.element)
     bullets.push(bullet)
     shootCooldown = 400
 }
@@ -236,36 +281,46 @@ const shoot = () => {
 const alienShoot = () => {
     if (aliens.length === 0) return
     const randomAlien = aliens[Math.floor(Math.random() * aliens.length)]
-    const bullet = document.createElement('div')
-    bullet.className = 'alien-bullet'
-    bullet.style.left = `${Number.parseInt(randomAlien.style.left) + 18}px`
-    bullet.style.top = `${Number.parseInt(randomAlien.style.top) + 30}px`
-    gameArea.appendChild(bullet)
+    const bullet = {
+        element: document.createElement('div'),
+        x: randomAlien.x + 18,
+        y: randomAlien.y + 30,
+        width: 4,
+        height: 10
+    }
+    bullet.element.className = 'alien-bullet'
+    updateElementPosition(bullet.element, bullet.x, bullet.y)
+    gameArea.appendChild(bullet.element)
     alienBullets.push(bullet)
     alienShootCooldown = 1000 + Math.random() * 2000
 }
 
-// Check for collisions
+// Check for collisions using transform-based positions
 const checkCollisions = () => {
     // Check player bullets vs aliens
     for (let i = bullets.length - 1; i >= 0; i--) {
-        const bulletRect = bullets[i].getBoundingClientRect()
+        const bullet = bullets[i]
+        const bulletBounds = getTransformBounds(bullet.element, bullet.x, bullet.y, bullet.width, bullet.height)
+        
         for (let j = aliens.length - 1; j >= 0; j--) {
-            const alienRect = aliens[j].getBoundingClientRect()
+            const alien = aliens[j]
+            const alienBounds = getTransformBounds(alien.element, alien.x, alien.y, alien.width, alien.height)
+            
             if (
-                bulletRect.left < alienRect.right &&
-                bulletRect.right > alienRect.left &&
-                bulletRect.top < alienRect.bottom &&
-                bulletRect.bottom > alienRect.top
+                bulletBounds.left < alienBounds.right &&
+                bulletBounds.right > alienBounds.left &&
+                bulletBounds.top < alienBounds.bottom &&
+                bulletBounds.bottom > alienBounds.top
             ) {
-                gameArea.removeChild(bullets[i])
+                gameArea.removeChild(bullet.element)
                 bullets.splice(i, 1)
-                gameArea.removeChild(aliens[j])
+                gameArea.removeChild(alien.element)
                 aliens.splice(j, 1)
                 score += 10
                 updateStats()
+                
                 if (aliens.length === 0) {
-                    timeRemaining += 20 
+                    timeRemaining += 20
                     createAliens()
                     score += 50
                     updateStats()
@@ -274,16 +329,20 @@ const checkCollisions = () => {
             }
         }
     }
-    const playerRect = player.getBoundingClientRect()
+    
+    // Check alien bullets vs player
+    const playerBounds = getTransformBounds(player.element, player.x, player.y, 60, 55)
     for (let i = alienBullets.length - 1; i >= 0; i--) {
-        const bulletRect = alienBullets[i].getBoundingClientRect()
+        const bullet = alienBullets[i]
+        const bulletBounds = getTransformBounds(bullet.element, bullet.x, bullet.y, bullet.width, bullet.height)
+        
         if (
-            bulletRect.left < playerRect.right &&
-            bulletRect.right > playerRect.left &&
-            bulletRect.top < playerRect.bottom &&
-            bulletRect.bottom > playerRect.top
+            bulletBounds.left < playerBounds.right &&
+            bulletBounds.right > playerBounds.left &&
+            bulletBounds.top < playerBounds.bottom &&
+            bulletBounds.bottom > playerBounds.top
         ) {
-            gameArea.removeChild(alienBullets[i])
+            gameArea.removeChild(bullet.element)
             alienBullets.splice(i, 1)
             loseLife()
         }
@@ -312,8 +371,7 @@ const gameOver = () => {
     document.querySelector('.menu-content h2').textContent = `GAME OVER  Your Score: ${score}`
 }
 
-// events
-
+// Events
 const keys = {}
 window.addEventListener("keydown", (e) => {
     keys[e.key] = true
@@ -321,12 +379,15 @@ window.addEventListener("keydown", (e) => {
         togglePause()
     }
 })
+
 window.addEventListener("keyup", (e) => {
     keys[e.key] = false
 })
+
 continueBtn.addEventListener("click", () => {
     togglePause()
 })
+
 restartBtn.addEventListener("click", () => {
     pauseMenu.style.display = 'none'
     gamePaused = false
@@ -350,20 +411,24 @@ const resetGame = () => {
         cancelAnimationFrame(gameLoopId)
         gameLoopId = null
     }
-    // Stop the old game loop
+    
     if (timerInterval) {
         clearInterval(timerInterval)
         timerInterval = null
     }
 
+    // Clear game area
     while (gameArea.firstChild) {
         gameArea.removeChild(gameArea.firstChild)
     }
+    
+    // Reset arrays
     bullets = []
     alienBullets = []
     aliens = []
+    player = { element: null, x: 0, y: 0 }
+    
     startGame()
 }
 
 window.addEventListener('load', startGame)
-
